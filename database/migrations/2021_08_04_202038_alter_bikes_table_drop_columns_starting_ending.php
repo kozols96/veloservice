@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterBikesTableAddTimestampStartEnd extends Migration
+class AlterBikesTableDropColumnsStartingEnding extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,8 @@ class AlterBikesTableAddTimestampStartEnd extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasColumns('bikes', ['starting_time', 'ending_time'])) {
-            return;
-        }
-
         Schema::table('bikes', function (Blueprint $table) {
-            $table->timestamp('starting_time');
-            $table->timestamp('ending_time');
+            $table->dropColumn(['starting_time', 'ending_time']);
         });
     }
 
@@ -30,6 +25,13 @@ class AlterBikesTableAddTimestampStartEnd extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns('bikes', ['starting_time', 'ending_time']);
+        if (Schema::hasColumns('bikes', ['starting_time', 'ending_time'])) {
+            return;
+        }
+
+        Schema::table('bikes', function (Blueprint $table) {
+           $table->timestamp('starting_time');
+           $table->timestamp('ending_time');
+        });
     }
 }

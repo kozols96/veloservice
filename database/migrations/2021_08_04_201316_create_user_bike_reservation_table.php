@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBikesTable extends Migration
+class CreateUserBikeReservationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,23 @@ class CreateBikesTable extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('bikes')) {
+        if (Schema::hasTable('user_bike_reservation')) {
             return;
         }
 
-        Schema::create('bikes', function (Blueprint $table) {
+        Schema::create('user_bike_reservation', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->timestamps();
-            $table->foreignId('user_id')->nullable()
+            $table->foreignId('user_id')
+                ->nullable()
                 ->constrained('users')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
+            $table->foreignId('bike_id')
+                ->nullable()
+                ->constrained('bikes')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
+            $table->timestamps();
         });
     }
 
@@ -35,6 +40,6 @@ class CreateBikesTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bikes');
+        Schema::dropIfExists('user_bike_reservation');
     }
 }
