@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\BikeController;
+use App\Http\Controllers\Api\UserBikeReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/bikes', function () {
-    return 'bikes';
-});
+// Bike REST API requests
+Route::get('/bikes', [BikeController::class, 'index']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+// UserBikeReservation REST API requests
+Route::get('/reservations', [UserBikeReservationController::class, 'index']);
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
