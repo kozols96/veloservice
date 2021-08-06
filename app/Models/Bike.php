@@ -16,19 +16,7 @@ class Bike extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'starting_time',
-        'ending_time',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'starting_time' => 'datetime',
-        'ending_time' => 'datetime'
+        'name'
     ];
 
     public function users(): BelongsToMany

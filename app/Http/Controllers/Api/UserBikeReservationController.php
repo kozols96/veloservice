@@ -28,7 +28,7 @@ class UserBikeReservationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

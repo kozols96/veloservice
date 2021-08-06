@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Bike REST API requests
-Route::get('/bikes', [BikeController::class, 'index']);
+//Route::get('/bikes', [BikeController::class, 'index']);
+//Route::post('/bikes', [BikeController::class, 'store']);
+Route::resource('bikes', BikeController::class);
 
 // UserBikeReservation REST API requests
 Route::get('/reservations', [UserBikeReservationController::class, 'index']);
