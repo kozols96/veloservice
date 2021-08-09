@@ -10,6 +10,7 @@ class UserBikeReservation extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'bike_id',
         'starting_time',
         'ending_time'
