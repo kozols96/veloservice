@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/bikes', [BikeController::class, 'index']);
 //Route::post('/bikes', [BikeController::class, 'store']);
 Route::resource('bikes', BikeController::class);
+Route::get('/bikes/search/{name}', [BikeController::class, 'search']);
 
 // UserBikeReservation REST API requests
 Route::get('/reservations', [UserBikeReservationController::class, 'index']);

@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Exceptions\BikeCollectionNotFound;
 use App\Exceptions\BikeNotFoundException;
 use App\Models\Bike;
 use App\Repositories\BikeRepositoryInterface;
 use App\Rules\AlreadyExists;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class BikeService
 {
@@ -34,6 +36,7 @@ class BikeService
     public function viewBike(int $id): ?Bike
     {
         $bike = $this->bikeRepository->findById($id);
+
         if (!$bike) {
             throw BikeNotFoundException::withBikeId($id);
         }
@@ -48,7 +51,6 @@ class BikeService
     public function addBike(Request $request): Bike|Model
     {
         $this->validateBikeItemOrFail($request);
-
         return $this->bikeRepository->create($request->all());
     }
 
@@ -58,5 +60,37 @@ class BikeService
     private function validateBikeItemOrFail(Request $request): void
     {
         $request->validate(['name' => ['required', resolve(AlreadyExists::class)]]);
+    }
+
+    public function editBike(Request $request, int $id): bool
+    {
+        $this->validateBikeItemOrFail($request);
+        return $this->bikeRepository->update($id, $request->all());
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws BikeNotFoundException
+     */
+    public function removeBike(int $id): bool
+    {
+        return $this->bikeRepository->deleteById($id);
+    }
+
+    /**
+     * @param string $name
+     * @return Collection
+     * @throws BikeCollectionNotFound
+     */
+    public function searchBike(string $name): Collection
+    {
+        $bikeCollection = $this->bikeRepository->searchBike($name);
+
+        if ($bikeCollection->isEmpty()) {
+            throw new BikeCollectionNotFound();
+        }
+
+        return $bikeCollection;
     }
 }

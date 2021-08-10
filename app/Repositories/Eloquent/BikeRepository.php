@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Exceptions\BikeCollectionNotFound;
+use App\Exceptions\BikeNotFoundException;
 use App\Models\Bike;
 use App\Repositories\BikeRepositoryInterface;
 use Illuminate\Support\Collection;
@@ -50,10 +52,17 @@ class BikeRepository extends BaseRepository implements BikeRepositoryInterface
 
     /**
      * @inheritDoc
+     * @throws BikeNotFoundException
      */
     public function deleteById(int $id): bool
     {
-        return $this->findById($id)->delete();
+        $bike = $this->findById($id);
+
+        if (!$bike) {
+            throw BikeNotFoundException::withBikeId($id);
+        }
+
+        return $bike->delete();
     }
 
     /**
@@ -62,5 +71,13 @@ class BikeRepository extends BaseRepository implements BikeRepositoryInterface
     public function checkIsBikeAdded(string $name): bool
     {
         return $this->bikeModel->where('name', '=', $name)->exists();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchBike(string $name): Collection
+    {
+        return $this->bikeModel->where('name', 'like', '%' . $name . '%')->get();
     }
 }

@@ -19,6 +19,11 @@ class Bike extends Model
         'name'
     ];
 
+    /**
+     * Many-to-Many relationship with users
+     *
+     * @return BelongsToMany
+     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(

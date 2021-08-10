@@ -45,7 +45,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Many to Many relationship with Bike
+     * Many-to-Many relationship with Bike
      *
      * @return BelongsToMany
      */

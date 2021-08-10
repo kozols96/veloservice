@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\AdminValidationException;
+use App\Exceptions\BikeCollectionNotFound;
 use App\Exceptions\BikeNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Bike;
 use App\Repositories\BikeRepositoryInterface;
 use App\Services\BikeService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class BikeController extends Controller
 {
@@ -41,9 +39,9 @@ class BikeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function index(): \Illuminate\Support\Collection
+    public function index(): Collection
     {
         return $this->bikeRepository->all();
     }
@@ -53,7 +51,6 @@ class BikeController extends Controller
      *
      * @param Request $request
      * @return Bike|null
-     * @throws AdminValidationException
      */
     public function store(Request $request): ?Bike
     {
@@ -64,9 +61,9 @@ class BikeController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Model|JsonResponse
+     * @return Bike|JsonResponse
      */
-    public function show(int $id): Model|JsonResponse
+    public function show(int $id): Bike|JsonResponse
     {
         try {
             return $this->bikeService->viewBike($id);
@@ -82,21 +79,38 @@ class BikeController extends Controller
      *
      * @param Request $request
      * @param int $id
-     * @return Response
+     * @return bool|JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): bool|JsonResponse
     {
-        //
+        try {
+            return $this->bikeService->editBike($request, $id);
+        } catch (BikeNotFoundException $exception) {
+            return new JsonResponse([
+                'message' => $exception->getMessage()
+            ], 404);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return Response
+     * @return bool
+     * @throws BikeNotFoundException
      */
-    public function destroy($id)
+    public function destroy(int $id): bool
     {
-        //
+        return $this->bikeService->removeBike($id);
+    }
+
+    /**
+     * @param string $name
+     * @return Collection
+     * @throws BikeCollectionNotFound
+     */
+    public function search(string $name): Collection
+    {
+        return $this->bikeService->searchBike($name);
     }
 }
