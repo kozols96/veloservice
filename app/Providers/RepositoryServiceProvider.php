@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Repositories\BikeRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Repositories\Eloquent\BikeRepository;
+use App\Repositories\Eloquent\UserBikeReservationRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\EloquentRepositoryInterface;
+use App\Repositories\UserBikeReservationRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +24,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EloquentRepositoryInterface::class, BaseRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(BikeRepositoryInterface::class, BikeRepository::class);
+        $this->app->bind(UserBikeReservationRepositoryInterface::class, UserBikeReservationRepository::class);
     }
 
     /**

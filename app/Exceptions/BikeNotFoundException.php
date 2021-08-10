@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 
 class BikeNotFoundException extends Exception
 {
@@ -14,12 +15,12 @@ class BikeNotFoundException extends Exception
     /**
      * @var string
      */
-    private string $name;
+    protected $message = "Bike not found";
 
     /**
-     * @var string
+     * @var int
      */
-    protected $message = "Bike not found";
+    protected $code = 404;
 
     /**
      * @param int $id
@@ -32,13 +33,6 @@ class BikeNotFoundException extends Exception
         return $e;
     }
 
-    public static function withBikeName(string $name): static
-    {
-        $e = new self();
-        $e->name = $name;
-        return $e;
-    }
-
     /**
      * Get the exception's context information.
      *
@@ -46,9 +40,14 @@ class BikeNotFoundException extends Exception
      */
     public function context(): array
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name
-        ];
+        return ['id' => $this->id];
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function render(): JsonResponse
+    {
+        return new JsonResponse(['message' => $this->message], $this->code);
     }
 }

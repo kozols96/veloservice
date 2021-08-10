@@ -35,13 +35,8 @@ class BikeService
      */
     public function viewBike(int $id): ?Bike
     {
-        $bike = $this->bikeRepository->findById($id);
-
-        if (!$bike) {
-            throw BikeNotFoundException::withBikeId($id);
-        }
-
-        return $bike;
+        $this->checkIfBikeExists($id);
+        return $this->bikeRepository->findById($id);
     }
 
     /**
@@ -62,8 +57,15 @@ class BikeService
         $request->validate(['name' => ['required', resolve(AlreadyExists::class)]]);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return bool
+     * @throws BikeNotFoundException
+     */
     public function editBike(Request $request, int $id): bool
     {
+        $this->checkIfBikeExists($id);
         $this->validateBikeItemOrFail($request);
         return $this->bikeRepository->update($id, $request->all());
     }
@@ -75,6 +77,7 @@ class BikeService
      */
     public function removeBike(int $id): bool
     {
+        $this->checkIfBikeExists($id);
         return $this->bikeRepository->deleteById($id);
     }
 
@@ -92,5 +95,16 @@ class BikeService
         }
 
         return $bikeCollection;
+    }
+
+    /**
+     * @param int $id
+     * @throws BikeNotFoundException
+     */
+    private function checkIfBikeExists(int $id): void
+    {
+        if (!$this->bikeRepository->findById($id)) {
+            throw BikeNotFoundException::withBikeId($id);
+        }
     }
 }

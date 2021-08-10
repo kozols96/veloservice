@@ -61,17 +61,12 @@ class BikeController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Bike|JsonResponse
+     * @return Bike
+     * @throws BikeNotFoundException
      */
-    public function show(int $id): Bike|JsonResponse
+    public function show(int $id): Bike
     {
-        try {
-            return $this->bikeService->viewBike($id);
-        } catch (BikeNotFoundException $exception) {
-            return new JsonResponse([
-                'message' => $exception->getMessage()
-            ], 404);
-        }
+        return $this->bikeService->viewBike($id);
     }
 
     /**
@@ -80,16 +75,11 @@ class BikeController extends Controller
      * @param Request $request
      * @param int $id
      * @return bool|JsonResponse
+     * @throws BikeNotFoundException
      */
     public function update(Request $request, int $id): bool|JsonResponse
     {
-        try {
-            return $this->bikeService->editBike($request, $id);
-        } catch (BikeNotFoundException $exception) {
-            return new JsonResponse([
-                'message' => $exception->getMessage()
-            ], 404);
-        }
+        return $this->bikeService->editBike($request, $id);
     }
 
     /**

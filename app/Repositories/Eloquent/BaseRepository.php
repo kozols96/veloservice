@@ -13,11 +13,11 @@ class BaseRepository implements EloquentRepositoryInterface
     protected Model $model;
 
     /**
-     * @param Model $bikeModel
+     * @param Model $userModel
      */
-    public function __construct(Model $bikeModel)
+    public function __construct(Model $userModel)
     {
-        $this->model = $bikeModel;
+        $this->model = $userModel;
     }
 
     /**

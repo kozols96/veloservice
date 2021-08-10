@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use App\Models\Bike;
 use App\Repositories\BikeRepositoryInterface;
 use Illuminate\Contracts\Validation\Rule;
 

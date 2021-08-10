@@ -2,40 +2,56 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\BikeNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\UserBikeReservation;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\UserBikeReservationService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class UserBikeReservationController extends Controller
 {
     /**
+     * @var UserBikeReservationService
+     */
+    private UserBikeReservationService $userBikeReservationService;
+
+    /**
+     * @param UserBikeReservationService $userBikeReservationService
+     */
+    public function __construct(UserBikeReservationService $userBikeReservationService)
+    {
+        $this->userBikeReservationService = $userBikeReservationService;
+    }
+
+    /**
      * Display a listing of the resource.
      *
-     * @return Collection|UserBikeReservation[]
+     * @return Collection
      */
-    public function index(): array|Collection
+    public function index()
     {
-        return UserBikeReservation::all();
+        return $this->userBikeReservationService->viewReservations();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return Response
+     * @param Request $request
+     * @return UserBikeReservation|Model
+     * @throws BikeNotFoundException|\Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): Model|UserBikeReservation
     {
-
+        return $this->userBikeReservationService->addReservation($request);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
@@ -45,9 +61,9 @@ class UserBikeReservationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -58,7 +74,7 @@ class UserBikeReservationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {

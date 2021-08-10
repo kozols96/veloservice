@@ -2,9 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\BikeCollectionNotFound;
-use App\Exceptions\BikeNotFoundException;
 use App\Models\Bike;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 interface BikeRepositoryInterface extends EloquentRepositoryInterface
@@ -38,7 +37,6 @@ interface BikeRepositoryInterface extends EloquentRepositoryInterface
      *
      * @param int $id
      * @return bool
-     * @throws BikeNotFoundException
      */
     public function deleteById(int $id): bool;
 
@@ -54,7 +52,7 @@ interface BikeRepositoryInterface extends EloquentRepositoryInterface
      * Search bike by name
      *
      * @param string $name
-     * @return Collection
+     * @return Collection|null
      */
-    public function searchBike(string $name): Collection;
+    public function searchBike(string $name): ?Collection;
 }

@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BikeController;
 use App\Http\Controllers\Api\UserBikeReservationController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,15 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Bike REST API requests
-//Route::get('/bikes', [BikeController::class, 'index']);
-//Route::post('/bikes', [BikeController::class, 'store']);
-Route::resource('bikes', BikeController::class);
-Route::get('/bikes/search/{name}', [BikeController::class, 'search']);
+// Auth REST API public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-// UserBikeReservation REST API requests
-Route::get('/reservations', [UserBikeReservationController::class, 'index']);
+// Auth REST API protected
+Route::middleware('auth:sanctum')->group(function () {
+    // Bike resource routes
+    Route::resource('bikes', BikeController::class);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::resource('user-bike-reservations', UserBikeReservationController::class);
+
+    // Auth routes
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// UserBikeReservation REST API routes
+Route::get('/reservations', [UserBikeReservationController::class, 'index']);
