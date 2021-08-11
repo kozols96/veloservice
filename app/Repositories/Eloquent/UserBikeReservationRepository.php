@@ -32,7 +32,13 @@ class UserBikeReservationRepository extends BaseRepository implements UserBikeRe
         return $this->userBikeReservation
             ->leftJoin('users', 'user_bike_reservations.user_id', '=', 'users.id')
             ->where($conditions)
-            ->get();
+            ->get(
+                [
+                    'user_bike_reservations.bike_id',
+                    'user_bike_reservations.starting_time',
+                    'user_bike_reservations.ending_time'
+                ]
+            );
     }
 
     /**
@@ -74,16 +80,27 @@ class UserBikeReservationRepository extends BaseRepository implements UserBikeRe
         int $bikeId,
         string $startingTime,
         string $endingTime
-    ): bool
-    {
+    ): bool {
         $conditions = [
+            'bike_id' => $bikeId,
             ['starting_time', '>=', $startingTime],
             ['ending_time', '<=', $endingTime]
         ];
 
         return $this->userBikeReservation
-            ->where('bike_id', $bikeId)
             ->where($conditions)
             ->exists();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkIfReservationExistsByUserId(int $id, int $userId): bool
+    {
+        $conditions = [
+          'id' => $id,
+          'user_id' => $userId
+        ];
+        return $this->userBikeReservation->where($conditions)->exists();
     }
 }

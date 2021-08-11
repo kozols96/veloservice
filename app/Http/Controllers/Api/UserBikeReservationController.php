@@ -30,7 +30,7 @@ class UserBikeReservationController extends Controller
      *
      * @return Collection
      */
-    public function index()
+    public function index(): Collection
     {
         return $this->userBikeReservationService->viewReservations();
     }
@@ -48,36 +48,27 @@ class UserBikeReservationController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return bool
+     * @throws BikeNotFoundException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): bool
     {
-        //
+        return $this->userBikeReservationService->editReservation($request, $id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return bool
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(int $id): bool
     {
-        //
+        return $this->userBikeReservationService->removeReservation($id);
     }
 }

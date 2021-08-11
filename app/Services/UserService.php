@@ -65,6 +65,10 @@ class UserService
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function signOut(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();

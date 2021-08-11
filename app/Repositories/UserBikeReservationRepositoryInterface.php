@@ -50,4 +50,11 @@ interface UserBikeReservationRepositoryInterface extends EloquentRepositoryInter
         string $startingTime,
         string $endingTime
     ): bool;
+
+    /**
+     * @param int $id
+     * @param int $userId
+     * @return bool
+     */
+    public function checkIfReservationExistsByUserId(int $id, int $userId): bool;
 }

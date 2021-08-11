@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\BikeNotFoundException;
+use App\Exceptions\UserBikeReservationsByUserIdException;
+use App\Exceptions\UserBikeReservationTimeValidationException;
 use App\Models\UserBikeReservation;
 use App\Repositories\BikeRepositoryInterface;
 use App\Repositories\UserBikeReservationRepositoryInterface;
@@ -54,6 +56,48 @@ class UserBikeReservationService
         $userId = $request->user()->id;
         $fields = $this->validateUserBikeReservation($request);
 
+        $attributes = $this->checkIfBikeExistsAndGetFields($fields, $userId);
+
+        return $this->userBikeReservationRepository->create($attributes);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function validateUserBikeReservation(Request $request): array
+    {
+        return $request->validate([
+            'bike_id' => 'required|numeric',
+            'starting_time' => 'required|date',
+            'ending_time' => 'required|date'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return bool
+     * @throws BikeNotFoundException|UserBikeReservationTimeValidationException
+     */
+    public function editReservation(Request $request, int $id): bool
+    {
+        $userId = $request->user()->id;
+        $fields = $this->validateUserBikeReservation($request);
+
+        $attributes = $this->checkIfBikeExistsAndGetFields($fields, $userId);
+
+        return $this->userBikeReservationRepository->update($id, $attributes);
+    }
+
+    /**
+     * @param array $fields
+     * @param int $userId
+     * @return array
+     * @throws BikeNotFoundException|UserBikeReservationTimeValidationException
+     */
+    private function checkIfBikeExistsAndGetFields(array $fields, int $userId): array
+    {
         $bikeId = $fields['bike_id'];
 
         if (!$this->bikeRepository->findById($bikeId)) {
@@ -74,22 +118,25 @@ class UserBikeReservationService
                 $fields['ending_time']
             )
         ) {
-            throw new \Exception('This time is not available');
+            throw new UserBikeReservationTimeValidationException();
         }
 
-        return $this->userBikeReservationRepository->create($attributes);
+        return $attributes;
     }
 
     /**
-     * @param Request $request
-     * @return array
+     * @param int $id
+     * @return bool
+     * @throws \Exception
      */
-    private function validateUserBikeReservation(Request $request): array
+    public function removeReservation(int $id): bool
     {
-        return $request->validate([
-            'bike_id' => 'required|numeric',
-            'starting_time' => 'required|date',
-            'ending_time' => 'required|date'
-        ]);
+        $userId = auth()->user()->id;
+
+        if (!$this->userBikeReservationRepository->checkIfReservationExistsByUserId($id, $userId)) {
+            throw new UserBikeReservationsByUserIdException();
+        }
+
+        return $this->userBikeReservationRepository->deleteById($id);
     }
 }

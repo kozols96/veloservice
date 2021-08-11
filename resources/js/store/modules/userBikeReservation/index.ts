@@ -1,0 +1,1 @@
+import { ActionTree } from 'vuex'
