@@ -12,5 +12,17 @@ const mix = require('laravel-mix');
  */
 
 mix.ts('resources/js/app.ts', 'public/js').vue({ version: 3 })
+    .webpackConfig({
+        module: {
+            rules: [
+                {
+                    enforce: 'pre',
+                    exclude: /node_modules/,
+                    loader: 'eslint-loader',
+                    test: /\.(js|ts|vue)?$/
+                }
+            ]
+        }
+    })
     .sass('resources/sass/app.scss', 'public/css')
     .sourceMaps();
